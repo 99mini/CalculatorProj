@@ -5,15 +5,12 @@ public class Main {
         Listener listener = new Listener();
         Calculate calculate = new Calculate();
 
-        String expression = new String();
-        ArrayList<String> list = new ArrayList<>();
-        double result;
+        listener.setExpression();
+        String expression = listener.getExpression();
 
-        list = listener.change(listener.getExpression());
+        ArrayList<String> list = listener.change(expression);
 
-       expression = calculate.transform(listener.getExpression());
-
-        result = calculate.calcFunc(expression);
+        int result = calculate.calcFunc(calculate.pushStack(list));
 
         System.out.println(result);
     }

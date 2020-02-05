@@ -1,57 +1,63 @@
+import java.util.ArrayList;
 import java.util.Stack;
 
 public class Calculate {
 
-    public String transform(String infixExpression) {
-        Stack<Character> stack = new Stack<>();
-        int size = infixExpression.length();
-        String result = "";
+    public ArrayList<String> pushStack(ArrayList<String> infixExpression) {
+        Stack<String> stack = new Stack<>();
+        int size = infixExpression.size();
+        ArrayList<String> result = new ArrayList<>();
 
         for (int i = 0; i < size; i++) {
-            if (infixExpression.charAt(i) == '(') {
-                stack.push(infixExpression.charAt(i));
-            } else if (infixExpression.charAt(i) == ')') {
+            String curr = infixExpression.get(i);
+            if (curr.equals("(")) {
+                stack.push(curr);
+            } else if (curr.equals(")")) {
                 while (!stack.empty()) {
-                    if (stack.peek() != '(') {
-                        result += stack.pop();
+                    if (!stack.peek().equals("(")) {
+                        result.add(stack.pop());
                     } else {
                         break;
                     }
                 }
                 stack.pop();
-            } else if (infixExpression.charAt(i) <= '9' && infixExpression.charAt(i) >= '0') {
-                result += infixExpression.charAt(i);
-            } else if (infixExpression.charAt(i) == '+' || infixExpression.charAt(i) == '-') {
+            } else if (curr.equals("+") || curr.equals("-")) {
                 while (!stack.empty()) {
-                    if (stack.peek() == '*' || stack.peek() == '/' || stack.peek() == '%' || stack.peek() != '(') {
-                        result += stack.pop();
+                    if (stack.peek().equals("*") || stack.peek().equals("/") || stack.peek().equals("%") || !stack.peek().equals("(")) {
+                        result.add(stack.pop());
                     } else {
                         break;
                     }
                 }
-                stack.push(infixExpression.charAt(i));
-            } else if (infixExpression.charAt(i) == '*' || infixExpression.charAt(i) == '/' || infixExpression.charAt(i) == '%') {
-                stack.push(infixExpression.charAt(i));
+                stack.push(curr);
+            } else if (curr.equals("*") || curr.equals("/") || curr.equals("%")) {
+                stack.push(curr);
+            }
+            //숫자인 경우
+            else {
+                result.add(curr);
             }
         }
         while (!stack.empty()) {
-            result += stack.pop();
+            result.add(stack.pop());
         }
         return result;
     }
 
-    public int calcFunc(String expression) {
-        Stack<Character> stack = new Stack<>();
-        int size = expression.length();
+    public int calcFunc(ArrayList<String> expression) {
+        Stack<Integer> stack = new Stack<>();
+        int size = expression.size();
 
         for (int i = 0; i < size; i++) {
-            if (expression.charAt(i) <= '9' && expression.charAt(i) >= '0') {
-                stack.push(expression.charAt(i));
+            String curr = expression.get(i);
+            if (curr.charAt(0) <= '9' && curr.charAt(0) >= '0') {
+                int operand = Integer.parseInt(curr);
+                stack.push(operand);
             } else {
-                int operator = expression.charAt(i);
+                int operator = curr.charAt(0);
                 int tmp = 0;
-                int num1 = Character.getNumericValue(stack.pop());
-                int num2 = Character.getNumericValue(stack.pop());
+                int num1 = stack.pop();
+                int num2 = stack.pop();
 
                 switch (operator) {
                     case '+':
@@ -72,9 +78,9 @@ public class Calculate {
                     default:
                         break;
                 }
-                stack.push(Character.forDigit(tmp, 10));
+                stack.push(tmp);
             }
         }
-        return Character.getNumericValue(stack.peek());
+        return stack.peek();
     }
 }
